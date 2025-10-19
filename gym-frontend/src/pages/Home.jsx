@@ -1,47 +1,76 @@
-import { Link } from "react-router-dom";
-
 export default function Home() {
   return (
-    <div className="bg-black text-white min-h-screen font-[Poppins]">
-      {/* Hero */}
-      <section className="relative h-screen flex flex-col justify-center items-start px-10 md:px-24">
-        <img
-          src="https://media.istockphoto.com/id/1495388784/photo/sports-fitness-and-equipment-with-empty-room-of-gym-for-workout-health-and-background.jpg?s=612x612&w=0&k=20&c=xG-0wFkye7gcv8RXUsbQoBv1MaEZyvdYVFHShB0ghmU="
-          alt="Gym Background"
-          className="absolute inset-0 w-full h-full object-cover"
-        />
-        <div className="absolute inset-0 bg-gradient-to-r from-black/90 via-black/70 to-transparent" />
-        <div className="relative z-10 max-w-3xl">
-          <p className="text-sm tracking-[4px] text-yellow-400 uppercase mb-4">
-            Elite Fitness Training
-          </p>
-          <h1 className="text-6xl md:text-7xl font-extrabold leading-tight">
-            <span className="text-white">Shape it up!</span>
-            <br />
-            <span className="text-yellow-400">Get fit, don’t quit.</span>
-          </h1>
-          <p className="text-gray-300 mt-6 text-lg leading-relaxed">
-            Today I will do what others won’t, so tomorrow I can accomplish what others can’t.
-            Excellence then is not an act but a habit.
-          </p>
-          <Link
-            to="/register"
-            className="mt-10 inline-block bg-yellow-500 text-black px-10 py-3 rounded-full text-lg font-semibold hover:bg-yellow-400 transition duration-300"
-          >
-            Join Us Now
-          </Link>
-        </div>
-      </section>
+    <div className="min-h-screen bg-gradient-to-br from-orange-50 to-white flex flex-col">
+      {/* Hero section */}
+      <section className="flex flex-col items-center justify-center text-center flex-1 px-6 pt-10 pb-6">
+        <div className="max-w-3xl">
+          <div className="text-5xl font-extrabold text-gray-900 mb-4">
+            “Push yourself, because no one else is going to do it for you.”
+          </div>
 
-      {/* About */}
-      <section className="py-24 bg-black text-center border-t border-neutral-800">
-        <h2 className="text-4xl font-bold text-yellow-400 mb-6 uppercase tracking-wide">
-          About SPORTIFY
-        </h2>
-        <p className="max-w-3xl mx-auto text-gray-400 text-lg leading-relaxed">
-          SPORTIFY is your digital fitness hub. Build discipline, sharpen your mindset, and track
-          your growth. Join a global community committed to strength, endurance, and excellence.
-        </p>
+          <p className="text-gray-500 mb-6">
+            A complete platform to manage memberships, workouts, payments,
+            trainers, and progress — all in one place.
+          </p>
+
+          <div className="flex justify-center gap-4 mb-12">
+            <button className="bg-orange-500 text-white px-6 py-3 rounded-lg font-semibold hover:bg-orange-600 transition">
+              Sign In
+            </button>
+            <button className="border border-gray-300 px-6 py-3 rounded-lg font-semibold text-gray-700 hover:border-orange-400 hover:text-orange-500 transition">
+              Get Started
+            </button>
+          </div>
+        </div>
+
+        {/* Feature cards */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
+          {[
+            {
+              icon: "👤",
+              title: "User Management",
+              desc: "Role-based access for members, trainers, and admins with secure authentication.",
+            },
+            {
+              icon: "💳",
+              title: "Membership Plans",
+              desc: "Flexible subscription options with automatic renewal and expiry tracking.",
+            },
+            {
+              icon: "📅",
+              title: "Class Scheduling",
+              desc: "Book classes, manage schedules, and track attendance seamlessly.",
+            },
+            {
+              icon: "📈",
+              title: "Progress Tracking",
+              desc: "Track workouts, BMI, and performance improvement history.",
+            },
+            {
+              icon: "💰",
+              title: "Payment System",
+              desc: "Secure payment processing with receipts and transaction history.",
+            },
+            {
+              icon: "🏋️",
+              title: "Workout Plans",
+              desc: "Trainers can create personalized workout plans for members.",
+            },
+          ].map((card) => (
+            <div
+              key={card.title}
+              className="bg-white border border-gray-200 rounded-xl shadow-sm p-6 text-left hover:shadow-md transition"
+            >
+              <div className="text-3xl text-orange-500 mb-3">{card.icon}</div>
+              <h3 className="text-lg font-semibold text-gray-800 mb-1">
+                {card.title}
+              </h3>
+              <p className="text-gray-500 text-sm leading-relaxed">
+                {card.desc}
+              </p>
+            </div>
+          ))}
+        </div>
       </section>
     </div>
   );

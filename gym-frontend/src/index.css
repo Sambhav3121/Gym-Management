@@ -2,9 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Optional: add global styling */
 body {
-  background-color: #000;
-  color: #fff;
-  font-family: 'Poppins', sans-serif;
+  @apply bg-white text-gray-900 font-sans;
 }
-

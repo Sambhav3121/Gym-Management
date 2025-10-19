@@ -1,9 +1,8 @@
 import { useState } from "react";
+import { registerUser } from "../services/api";
 import { useNavigate } from "react-router-dom";
-import api from "../services/api";
 
 export default function Register() {
-  const nav = useNavigate();
   const [form, setForm] = useState({
     fullName: "",
     email: "",
@@ -11,132 +10,91 @@ export default function Register() {
     role: "Member",
     phoneNumber: "",
     birthDate: "",
+    address: "",
   });
-  const [loading, setLoading] = useState(false);
-  const [msg, setMsg] = useState("");
+  const navigate = useNavigate();
 
-  const onChange = (e) =>
-    setForm((f) => ({ ...f, [e.target.name]: e.target.value }));
+  const handleChange = (e) =>
+    setForm({ ...form, [e.target.name]: e.target.value });
 
-  const onSubmit = async (e) => {
-    e.preventDefault();
-    setLoading(true);
-    setMsg("");
-    try {
-      const { data } = await api.post("/api/User/register", form);
-      // If backend returns token on register, store it
-      if (data?.token) localStorage.setItem("token", data.token);
-      setMsg("Registered successfully!");
-      setTimeout(() => nav("/login"), 800);
-    } catch (err) {
-      setMsg(
-        err?.response?.data?.message ||
-          "Registration failed. Please check your details."
-      );
-    } finally {
-      setLoading(false);
-    }
+  const handleSubmit = async (e) => {
+  e.preventDefault();
+  try {
+    const payload = {
+      ...form,
+      birthDate: form.birthDate
+        ? new Date(form.birthDate).toISOString()
+        : null
+    };
+
+    await registerUser(payload);
+    alert("Registration successful!");
+    navigate("/login");
+  } catch (err) {
+    console.error("REGISTER ERROR:", err.response?.data || err.message);
+    alert("Error registering user");
+  }
   };
-
+  
   return (
-    <div className="min-h-screen bg-black text-white font-[Poppins] flex items-center justify-center px-4">
-      <div className="w-full max-w-xl bg-neutral-900/80 border border-neutral-800 rounded-2xl p-8 shadow-xl">
-        <h1 className="text-3xl font-extrabold text-center mb-6">
-          Create your account
-        </h1>
-
-        {msg && (
-          <div className="mb-4 text-center text-sm text-yellow-400">{msg}</div>
-        )}
-
-        <form onSubmit={onSubmit} className="space-y-4">
-          <div>
-            <label className="block mb-1 text-sm text-neutral-300">Full Name</label>
-            <input
-              className="w-full bg-black border border-neutral-700 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-yellow-500"
-              name="fullName"
-              value={form.fullName}
-              onChange={onChange}
-              required
-            />
-          </div>
-
-          <div>
-            <label className="block mb-1 text-sm text-neutral-300">Email</label>
-            <input
-              type="email"
-              className="w-full bg-black border border-neutral-700 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-yellow-500"
-              name="email"
-              value={form.email}
-              onChange={onChange}
-              required
-            />
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <label className="block mb-1 text-sm text-neutral-300">Password</label>
-              <input
-                type="password"
-                className="w-full bg-black border border-neutral-700 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-yellow-500"
-                name="password"
-                value={form.password}
-                onChange={onChange}
-                required
-              />
-            </div>
-
-            <div>
-              <label className="block mb-1 text-sm text-neutral-300">Role</label>
-              <select
-                className="w-full bg-black border border-neutral-700 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-yellow-500"
-                name="role"
-                value={form.role}
-                onChange={onChange}
-              >
-                <option>Member</option>
-                <option>Trainer</option>
-                <option>Admin</option>
-              </select>
-            </div>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <label className="block mb-1 text-sm text-neutral-300">Phone Number</label>
-              <input
-                className="w-full bg-black border border-neutral-700 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-yellow-500"
-                name="phoneNumber"
-                value={form.phoneNumber}
-                onChange={onChange}
-              />
-            </div>
-
-            <div>
-              <label className="block mb-1 text-sm text-neutral-300">Birth Date</label>
-              <input
-                type="date"
-                className="w-full bg-black border border-neutral-700 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-yellow-500"
-                name="birthDate"
-                value={form.birthDate}
-                onChange={onChange}
-              />
-            </div>
-          </div>
-
-          <button
-            disabled={loading}
-            className="w-full mt-2 bg-yellow-500 hover:bg-yellow-400 text-black font-semibold rounded-lg px-6 py-3 transition"
+    <div className="min-h-screen flex justify-center items-center bg-gray-100">
+      <div className="bg-white shadow-lg rounded-xl p-10 w-full max-w-lg">
+        <h2 className="text-3xl font-bold text-center text-yellow-500 mb-8">
+          Create Account
+        </h2>
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <input
+            name="fullName"
+            placeholder="Full Name"
+            onChange={handleChange}
+            className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-400 outline-none"
+          />
+          <input
+            name="email"
+            type="email"
+            placeholder="Email"
+            onChange={handleChange}
+            className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-400 outline-none"
+          />
+          <input
+            name="password"
+            type="password"
+            placeholder="Password"
+            onChange={handleChange}
+            className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-400 outline-none"
+          />
+          <input
+            name="phoneNumber"
+            placeholder="Phone Number"
+            onChange={handleChange}
+            className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-400 outline-none"
+          />
+          <input
+            name="address"
+            placeholder="Address"
+            onChange={handleChange}
+            className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-400 outline-none"
+          />
+          <input
+            name="birthDate"
+            type="date"
+            onChange={handleChange}
+            className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-400 outline-none"
+          />
+          <select
+            name="role"
+            onChange={handleChange}
+            className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-yellow-400 outline-none"
           >
-            {loading ? "Registering..." : "Register"}
+            <option value="Member">Member</option>
+            <option value="Trainer">Trainer</option>
+          </select>
+          <button
+            type="submit"
+            className="w-full bg-yellow-500 text-white py-3 rounded-lg font-semibold hover:bg-yellow-600 transition"
+          >
+            Register
           </button>
-
-          <p className="text-center text-sm text-neutral-400">
-            Already have an account?{" "}
-            <a href="/login" className="text-yellow-400 hover:underline">
-              Sign in
-            </a>
-          </p>
         </form>
       </div>
     </div>

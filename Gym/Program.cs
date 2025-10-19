@@ -8,6 +8,16 @@ using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// ✅ CORS — Allow React Frontend
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowFrontend", policy =>
+        policy.WithOrigins("http://localhost:5173")
+              .AllowAnyHeader()
+              .AllowAnyMethod()
+              .AllowCredentials());
+});
+
 // ✅ Database connection
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
@@ -36,7 +46,6 @@ builder.Services.AddSwaggerGen(c =>
 {
     c.SwaggerDoc("v1", new OpenApiInfo { Title = "Gym Management API", Version = "v1" });
 
-    // Add JWT Authentication option in Swagger
     c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
         In = ParameterLocation.Header,
@@ -65,6 +74,7 @@ builder.Services.AddSwaggerGen(c =>
 
 // ✅ Register services
 builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IMembershipService, MembershipService>();
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
@@ -85,7 +95,12 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+// ✅ USE CORS (THIS FIXES YOUR ERROR)
+app.UseCors("AllowFrontend");
+
 app.UseAuthentication();
 app.UseAuthorization();
+
 app.MapControllers();
 app.Run();
