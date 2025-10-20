@@ -75,6 +75,9 @@ builder.Services.AddSwaggerGen(c =>
 // ✅ Register services
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IMembershipService, MembershipService>();
+builder.Services.AddScoped<IAttendanceService, AttendanceService>();
+builder.Services.AddScoped<IWorkoutPlanService, WorkoutPlanService>();
+builder.Services.AddScoped<IClassService, ClassService>();
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();

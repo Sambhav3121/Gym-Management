@@ -1,23 +1,71 @@
-import { Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate, Outlet } from "react-router-dom";
+
+import ProtectedRoute from "./components/ProtectedRoute";
+import Sidebar from "./components/Sidebar";
 import Navbar from "./components/Navbar";
+
 import Home from "./pages/Home";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
+import Dashboard from "./pages/Dashboard";
 import Profile from "./pages/Profile";
-import ProtectedRoute from "./components/ProtectedRoute";
+import EditProfile from "./pages/EditProfile";
 
-function App() {
+function PublicLayout() {
   return (
-    <>
+    <div className="min-h-screen w-full bg-gray-50 flex flex-col">
       <Navbar />
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
-        <Route path="/profile" element={<Profile />} />
-      </Routes>
-    </>
+      <div className="flex-1">
+        <Outlet />
+      </div>
+    </div>
   );
 }
 
-export default App;
+function MemberLayout() {
+  return (
+    <div className="min-h-screen w-full bg-gray-50 flex">
+      <Sidebar />
+      <Outlet />
+    </div>
+  );
+}
+
+export default function App() {
+  return (
+    <BrowserRouter>
+      <Routes>
+
+        {/* Public Routes */}
+        <Route element={<PublicLayout />}>
+          <Route path="/" element={<Home />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
+        </Route>
+
+        {/* Protected Member Routes */}
+        <Route
+          element={
+            <ProtectedRoute>
+              <MemberLayout />
+            </ProtectedRoute>
+          }
+        >
+          <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/profile" element={<Profile />} />
+          <Route path="/edit-profile" element={<EditProfile />} />
+
+          {/* placeholders for next pages */}
+          <Route path="/membership" element={<div className="p-8">Membership (coming soon)</div>} />
+          <Route path="/classes" element={<div className="p-8">Classes (coming soon)</div>} />
+          <Route path="/workouts" element={<div className="p-8">Workout Plans (coming soon)</div>} />
+          <Route path="/payments" element={<div className="p-8">Payments (coming soon)</div>} />
+          <Route path="/feedback" element={<div className="p-8">Feedback (coming soon)</div>} />
+        </Route>
+
+        {/* Default redirect */}
+        <Route path="*" element={<Navigate to="/dashboard" replace />} />
+      </Routes>
+    </BrowserRouter>
+  );
+}
