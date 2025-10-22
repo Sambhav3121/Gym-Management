@@ -3,13 +3,14 @@ import { BrowserRouter, Routes, Route, Navigate, Outlet } from "react-router-dom
 import ProtectedRoute from "./components/ProtectedRoute";
 import Sidebar from "./components/Sidebar";
 import Navbar from "./components/Navbar";
-
 import Home from "./pages/Home";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Dashboard from "./pages/Dashboard";
 import Profile from "./pages/Profile";
 import EditProfile from "./pages/EditProfile";
+import Membership from "./pages/Membership";
+import Classes from "./pages/Classes";
 
 function PublicLayout() {
   return (
@@ -54,10 +55,10 @@ export default function App() {
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/edit-profile" element={<EditProfile />} />
+          <Route path="/membership" element={<Membership />} />
+          <Route path="/classes" element={<Classes />} />
 
           {/* placeholders for next pages */}
-          <Route path="/membership" element={<div className="p-8">Membership (coming soon)</div>} />
-          <Route path="/classes" element={<div className="p-8">Classes (coming soon)</div>} />
           <Route path="/workouts" element={<div className="p-8">Workout Plans (coming soon)</div>} />
           <Route path="/payments" element={<div className="p-8">Payments (coming soon)</div>} />
           <Route path="/feedback" element={<div className="p-8">Feedback (coming soon)</div>} />

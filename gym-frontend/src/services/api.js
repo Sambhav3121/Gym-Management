@@ -10,14 +10,12 @@ API.interceptors.request.use((config) => {
   return config;
 });
 
-// ---- existing (keep) ----
 export const registerUser = (data) => API.post("/User/register", data);
 export const loginUser = (data) => API.post("/User/login", data);
 export const logoutUser = () => API.post("/User/logout");
 export const getProfile = () => API.get("/User/profile");
 export const updateProfile = (data) => API.put("/User/profile", data);
 
-// ---- dashboard/member APIs ----
 export const getCurrentMembership = () =>
   API.get("/UserMembership/current");
 
