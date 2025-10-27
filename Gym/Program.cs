@@ -8,7 +8,6 @@ using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// ✅ CORS — Allow React Frontend
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowFrontend", policy =>
@@ -18,11 +17,10 @@ builder.Services.AddCors(options =>
               .AllowCredentials());
 });
 
-// ✅ Database connection
+
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-// ✅ JWT Authentication
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {
@@ -41,7 +39,6 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 
 builder.Services.AddAuthorization();
 
-// ✅ Add Swagger + JWT support
 builder.Services.AddSwaggerGen(c =>
 {
     c.SwaggerDoc("v1", new OpenApiInfo { Title = "Gym Management API", Version = "v1" });
@@ -72,19 +69,19 @@ builder.Services.AddSwaggerGen(c =>
     });
 });
 
-// ✅ Register services
+
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IMembershipService, MembershipService>();
 builder.Services.AddScoped<IAttendanceService, AttendanceService>();
-builder.Services.AddScoped<IWorkoutPlanService, WorkoutPlanService>();
 builder.Services.AddScoped<IClassService, ClassService>();
+builder.Services.AddScoped<IWorkoutPlanService, WorkoutPlanService>();
+builder.Services.AddScoped<IFeedbackService, FeedbackService>();
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 
 var app = builder.Build();
 
-// ✅ Seed Admin User
 using (var scope = app.Services.CreateScope())
 {
     var userService = scope.ServiceProvider.GetRequiredService<IUserService>();
@@ -99,7 +96,6 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-// ✅ USE CORS (THIS FIXES YOUR ERROR)
 app.UseCors("AllowFrontend");
 
 app.UseAuthentication();

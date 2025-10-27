@@ -15,18 +15,15 @@ namespace Gym.Controllers
         private readonly IMembershipService _membership;
         private readonly IAttendanceService _attendance;
         private readonly IClassService _classes;
-        private readonly IWorkoutPlanService _workouts;
 
         public UserMembershipController(
             IMembershipService membership,
             IAttendanceService attendance,
-            IClassService classes,
-            IWorkoutPlanService workouts)
+            IClassService classes)
         {
             _membership = membership;
             _attendance = attendance;
             _classes = classes;
-            _workouts = workouts;
         }
 
         // ✅ MEMBERSHIP
@@ -101,16 +98,7 @@ namespace Gym.Controllers
             return Ok(new CountDto { Count = count });
         }
 
-        // ✅ WORKOUT PLANS
-        [HttpGet("workout/active")]
-        public async Task<IActionResult> GetActiveWorkoutPlans()
-        {
-            var userId = User.GetUserId();
-            var count = await _workouts.CountUserActiveAsync(userId);
-            return Ok(new CountDto { Count = count });
-        }
-
-        // ✅ ADMIN MEMBERSHIP QUERIES (Optional)
+        // ✅ ADMIN MEMBERSHIP QUERIES
         [HttpGet("all")]
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> GetAllMemberships()

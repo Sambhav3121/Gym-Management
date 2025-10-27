@@ -10,47 +10,48 @@ namespace Gym.Data
         {
         }
 
-        // ✅ Existing tables
         public DbSet<User> Users { get; set; }
         public DbSet<MembershipPlan> MembershipPlans { get; set; }
         public DbSet<UserMembership> UserMemberships { get; set; }
-
-        // ✅ New tables we added
+        public DbSet<WorkoutPlan> WorkoutPlans { get; set; }
+        public DbSet<WorkoutExercise> WorkoutExercises { get; set; }
+        public DbSet<Feedback> Feedbacks { get; set; }
         public DbSet<Attendance> Attendances { get; set; }
         public DbSet<ClassSession> ClassSessions { get; set; }
-        public DbSet<WorkoutPlanAssignment> WorkoutPlanAssignments { get; set; }
-
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
+       
+         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
 
-            // ✅ Cascade delete: deleting a MembershipPlan deletes related UserMemberships
+           
             modelBuilder.Entity<UserMembership>()
                 .HasOne(um => um.MembershipPlan)
                 .WithMany()
                 .HasForeignKey(um => um.MembershipPlanId)
                 .OnDelete(DeleteBehavior.Cascade);
 
-            // ✅ Cascade delete: deleting a User deletes their Memberships
             modelBuilder.Entity<UserMembership>()
                 .HasOne(um => um.User)
                 .WithMany()
                 .HasForeignKey(um => um.UserId)
                 .OnDelete(DeleteBehavior.Cascade);
 
-            // ✅ Configure Attendance (1 User -> Many Attendance records)
+            
             modelBuilder.Entity<Attendance>()
-                .HasIndex(a => new { a.UserId, a.CheckInTimeUtc }); // for faster daily lookup
+                .HasIndex(a => new { a.UserId, a.CheckInTimeUtc });
 
-            // ✅ Configure class sessions (optional advanced rules later)
+            
             modelBuilder.Entity<ClassSession>()
                 .Property(c => c.Title)
                 .IsRequired()
                 .HasMaxLength(100);
+            
+             modelBuilder.Entity<WorkoutPlan>()
+                .HasMany(p => p.Exercises)
+                .WithOne(e => e.WorkoutPlan)
+                .HasForeignKey(e => e.WorkoutPlanId)
+                .OnDelete(DeleteBehavior.Cascade);
 
-            // ✅ Configure Workout plans (basic setup, extend later if needed)
-            modelBuilder.Entity<WorkoutPlanAssignment>()
-                .HasIndex(w => w.UserId);
         }
     }
 }
